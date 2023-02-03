@@ -1,0 +1,115 @@
+﻿<html>
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="main.css" />
+  <title>PT Helper - 搜索</title>
+</head>
+
+<body>
+  <h1>PT Helper - 搜索、下载</h1>
+  <h2>
+    搜索：
+    <a href="#" id="search_show">显示</a>
+    <a href="#" id="search_hide">隐藏</a>
+  </h2>
+  <form method="get" id="search_form" class="float" style="left: 120px; top: 60px;">
+    <input type="search" id="search_text" name="q" />
+    <button type="submit">搜索</button>
+    <button id="button_search_all" type="button">全选</button>
+    <button id="button_down" type="button">下载</button>
+  </form>
+  <br />
+  <table id="search_table">
+    <thead>
+      <tr>
+        <th>&nbsp;</th>
+        <th>文件/标题</th>
+        <th>大小</th>
+        <th>种/下/完</th>
+        <th>来源</th>
+        <th>操作</th>
+      </tr>
+    </thead>
+    <template>
+      <tr>
+        <td><input type="checkbox"></td>
+        <td>
+          <b><a name="file">File</a></b>
+          <br />
+          <span name="title">Title</span>
+        </td>
+        <td name="size">Size</td>
+        <td name="seed">Seed/Down/Finish</td>
+        <td><a name="site">Site</a></td>
+        <td><a name="download">下载原文件</a></td>
+      </tr>
+    </template>
+    <tbody></tbody>
+  </table>
+
+  <h2>
+    下载：
+    <a href="#" id="down_show">显示</a>
+    <a href="#" id="down_hide">隐藏</a>
+  </h2>
+  <table id="down_table">
+    <template>
+      <tr>
+        <td name="name">-</td>
+        <td width="300">
+          <div class="progress_box">
+            <div class="progress_load" name="progress"></div>
+          </div>
+        </td>
+        <td name="status">-</td>
+      </tr>
+    </template>
+    <tbody></tbody>
+  </table>
+
+  <h2>
+    分析：
+    <a href="#" id="files_show">显示</a>
+    <a href="#" id="files_hide">隐藏</a>
+  </h2>
+  <table id="files_table">
+    <thead>
+      <tr>
+        <th>文件大小\种子</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <form class="float" style="right: 20px; top: 20px;">
+    <span id="popup_view">
+      <span id="popup_search">
+        <table id="site_table"></table>
+        <button id="button_close" type="button">全关</button>
+      </span>
+
+      <span id="popup_analyse">
+        <b><a id="link_qb" target="qBittorrent">qBittorrent</a></b><br />
+        <span id="form_select" style="display: none;">
+          选择分类：<select id="category">
+            <option selected="" value="\other"></option>
+          </select><br />
+          跳过校验：<input type="checkbox" id="skip_checking" value="true" /><br />
+          暂停任务：<input type="checkbox" id="paused" value="true" /><br />
+        </span>
+        <p id="analyse_message"></p>
+        <button id="button_refresh" type="button">刷新</button>
+        <button id="button_files_all" type="button">全选</button>
+        <button id="button_add" type="button">添加</button>
+      </span>
+
+    </span>
+    <button id="button_show" type="button">显示</button>
+    <button id="button_hide" type="button">隐藏</button>
+  </form>
+
+  <script src="./search.js"></script>
+</body>
+
+</html>

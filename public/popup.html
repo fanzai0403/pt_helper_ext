@@ -1,0 +1,30 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>PT Helper</title>
+  <link rel="stylesheet" href="main.css" />
+</head>
+
+<body>
+  <h1>PT Helper</h1>
+  <form method="get" action="/search.html" target="pt_search" style="text-align: right; font-size: 11pt; padding: 8px; line-height: 30px;">
+    <input type="search" name="q" size="28" />
+    <button type="submit">搜索</button><br />
+    <a id="button_close" href="#">全关闭</a>
+    <a href="/readme.html" target="bt_readme">说明</a>
+    <a href="/options.html" target="pt_options">配置</a>
+    <button id="button_signin" type="button">签到</button>
+  </form>
+  <table id="site_table" width="300pt">
+    <template>
+      <tr>
+        <th width="80"><a target="_blank">URL</a></th>
+        <td>-</td>
+      </tr>
+    </template>
+  </table>
+  <script src="./popup.js"></script>
+</body>
+
+</html>

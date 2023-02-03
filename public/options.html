@@ -1,0 +1,77 @@
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>PT Helper</title>
+  <link rel="stylesheet" href="main.css" />
+</head>
+
+<body>
+  <h1>PT Helper - 配置</h1>
+  <table id="site_table">
+    <thead>
+      <tr>
+        <th>名称</th>
+        <th>地址</th>
+        <th>操作</th>
+      </tr>
+      <tr>
+        <td colspan="3" style="text-align: right;">
+          <button type="button" id="site_add">添加</button>
+          <button type="button" id="edit_all">批量编辑</button>
+        </td>
+      </tr>
+    </thead>
+    <template>
+      <tr>
+        <td>name</td>
+        <td><a target="_blank">url</a></td>
+        <td>
+          <button type="button">编辑</button>
+          <button type="button">删除</button>
+          <button type="button">↑</button>
+          <button type="button">↓</button>
+        </td>
+      </tr>
+    </template>
+    <tbody></tbody>
+    <tfoot>
+      <tr><td colspan="3">&nbsp;</td></tr>
+      <tr>
+        <td colspan="3">
+          qBittorrent:
+          <a id="qb_link"></a>&nbsp;&nbsp;
+          <button type="button" id="qb_edit">编辑</button>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+  <form id="edit_form" style="width: 600pt; height: 400pt;">
+    <h2>批量编辑</h2>
+    站点数组（说明待续）：<br />
+    <textarea name="json" cols="100" rows="20" style="resize: none;"></textarea><br />
+    <button type="submit">确定</button>
+    <button type="button" name="cancel">取消</button>
+  </form>
+  <form id="qb_form" style="width: 400pt; height: 200pt;">
+    <h2>qBittorrent</h2>
+    地　址：<input type="url" name="url" /><br />
+    用户名：<input type="text" name="username" /><br />
+    密　码：<input type="password" name="password" /><br />
+    <button type="submit">确定</button>
+    <button type="button" name="cancel">取消</button>
+  </form>
+  <form id="site_form" style="width: 400pt; height: 300pt;">
+    <h2>站点编辑/添加</h2>
+    名称：<input type="text" name="name" size="40" /><br />
+    地址：<input type="text" name="url" size="40" /><br />
+    其它（说明待续）：<br />
+    <textarea name="json" cols="60" rows="12" style="resize: none;"></textarea><br />
+    <button type="submit">确定</button>
+    <button type="button" name="cancel">取消</button>
+  </form>
+  <div class="mask" id="mask"></div>
+  <script src="./options.js"></script>
+</body>
+
+</html>

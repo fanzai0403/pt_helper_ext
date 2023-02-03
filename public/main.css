@@ -1,0 +1,74 @@
+tr:nth-child(even) {
+    background-color: lightgray;
+}
+
+tr:hover {
+    background-color: coral;
+}
+
+td {
+    padding-left: 5px;
+    padding-right: 5px;
+    font-size: 9pt;
+}
+
+th {
+    font-size: 11pt;
+}
+
+.progress_box {
+    width: 100%;
+    height: 10px;
+    border: 1px solid gray;
+}
+
+.progress_load {
+    width: 0%;
+    height: 10px;
+    background-color: darkblue;
+}
+
+.float {
+    background-color: white;
+    overflow: hidden;
+    z-index: 900;
+    position: fixed;
+    padding: 8px;
+    text-align: center;
+    line-height: 30px;
+    border: 1px solid;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}
+
+.mask {
+    background-color: black;
+    opacity: 0.8;
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    left: 0px;
+    top: 0px;
+    z-index: 999;
+}
+
+.front {
+    background-color: white;
+    position: fixed;
+    z-index: 1000;
+    margin: auto;
+    left: 0px;
+    right: 0px;
+    top: 0px;
+    bottom: 0px;
+    padding: 8px;
+    text-align: center;
+    line-height: 30px;
+    border: 1px solid;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}

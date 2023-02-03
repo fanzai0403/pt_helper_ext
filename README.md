@@ -1,6 +1,6 @@
-# <img src="public/icons/icon_48.png" width="45" align="left"> Pt_helper_ext
+# <img src="public/icons/icon_48.png" width="45" align="left"> PT Helper Extension
 
-PT Helper Extension
+Chrome浏览器PT助手插件 - 多站点管理
 
 ## Features
 
@@ -30,23 +30,23 @@ PT Helper Extension
 
 | 字段名 | 定义 | 默认值 | 详情 |
 | ---- | ---- | ---- | ---- |
-| `"name"` | 名称 | 必填 | 站点名称，需要唯一 |
-| `"url"` | 地址 | 必填 | 站点根目录URL |
-| `"signin"` | 支持签到 | `true` |  |
-| `"signinLinkXPath"` | 签到按钮XPath | `"//a[@href=\"attendance.php\"]"` | 空串`""`表示打开站点即自动签到 |
-| `"signinSuccessXPath"` | 签到成功XPath | `"//td[@id=\"outer\"]//p[contains(text(),\"这是您的第\")]"` | 空串`""`表示直接假定成功 |
-| `"signinDoneXPath"` | 签到已完成XPath | `"//table[@id=\"info_block\"]//text()[contains(.,\"签到已得\")]"` | 空串`""`表示找不到签到按钮即认为已签 |
-| `"searchUrl"` | 搜索地址 | `"/torrents.php?search={0}"` | 其中`{0}`会被替换为搜索字符串 |
-| `"searchXPath"` | 搜索成功XPath | `"//table[@class=\"searchbox\"]"` | 用于区分站点出错、需要登录等情况 |
-| `"torrentXPath"` | 种子XPath | `"//table[@class=\"torrents\"]/tbody/tr/td/table[@class=\"torrentname\"]/../.."` | 一条种子记录的节点（以下几个XPath的根） |
-| `"linkXPath"` | 种子详情链接XPath | `"./td[2]//table/tbody/tr/td/a/@href"` |  |
-| `"downloadXPath"` | 种子下载链接XPath | `".//a[contains(@href,\"download\")]/@href"` |  |
-| `"fileXPath"` | 种子文件名XPath | `"./td[2]//table/tbody/tr/td/a/@title"` |  |
-| `"titleXPath"` | 种子标题XPath | `"./td[2]//table/tbody/tr/td/a/../br/following-sibling::text()[last()]"` |  |
-| `"sizeXPath"` | 种子大小XPath | `"./td[5]"` |  |
-| `"seedXPath"` | 种子做种人数XPath | `"./td[6]"` |  |
-| `"downXPath"` | 种子下载人数XPath | `"./td[7]"` |  |
-| `"finishXPath"` | 种子完成人数XPath | `"./td[8]"` |  |
+| name | 名称 | 必填 | 站点名称，需要唯一 |
+| url | 地址 | 必填 | 站点根目录URL |
+| signin | 支持签到 | `true` |  |
+| signinLinkXPath | 签到按钮XPath | `"//a[@href=\"attendance.php\"]"` | 空串`""`表示打开站点即自动签到 |
+| signinSuccessXPath | 签到成功XPath | `"//td[@id=\"outer\"]//p[contains(text(),\"这是您的第\")]"` | 空串`""`表示直接假定成功 |
+| signinDoneXPath | 签到已完成XPath | `"//table[@id=\"info_block\"]//text()[contains(.,\"签到已得\")]"` | 空串`""`表示找不到签到按钮即认为已签 |
+| searchUrl | 搜索地址 | `"/torrents.php?search={0}"` | 其中`{0}`会被替换为搜索字符串 |
+| searchXPath | 搜索成功XPath | `"//table[@class=\"searchbox\"]"` | 用于区分站点出错、需要登录等情况 |
+| torrentXPath | 种子XPath | `"//table[@class=\"torrents\"]/tbody/tr/td/table[@class=\"torrentname\"]/../.."` | 一条种子记录的节点（以下几个XPath的根） |
+| linkXPath | 种子详情链接XPath | `"./td[2]//table/tbody/tr/td/a/@href"` |  |
+| downloadXPath | 种子下载链接XPath | `".//a[contains(@href,\"download\")]/@href"` |  |
+| fileXPath | 种子文件名XPath | `"./td[2]//table/tbody/tr/td/a/@title"` |  |
+| titleXPath | 种子标题XPath | `"./td[2]//table/tbody/tr/td/a/../br/following-sibling::text()[last()]"` |  |
+| sizeXPath | 种子大小XPath | `"./td[5]"` |  |
+| seedXPath | 种子做种人数XPath | `"./td[6]"` |  |
+| downXPath | 种子下载人数XPath | `"./td[7]"` |  |
+| finishXPath | 种子完成人数XPath | `"./td[8]"` |  |
 
 ## Notice
 

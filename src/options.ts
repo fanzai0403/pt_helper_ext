@@ -93,7 +93,17 @@ const editForm = new FloatForm('edit_form', value => {
     items['@' + sd.name] = sd;
     order.push(sd.name);
   }
+  const rm: string[] = [];
+  for (const name in SiteInfo.ByName) {
+    const key = '@' + name;
+    if (!items[key]) {
+      rm.push(key);
+    }
+  }
   chrome.storage.sync.set(items);
+  if (rm.length > 0) {
+    chrome.storage.sync.remove(rm);
+  }
   return null;
 });
 
@@ -124,9 +134,11 @@ const siteForm = new FloatForm('site_form', value => {
     const i = editSiteName ? SiteInfo.Order.indexOf(editSiteName) : -1;
     if (i >= 0) {
       items.order[i] = data.name;
-      chrome.storage.sync.remove('@' + editSiteName!);
     } else {
       items.order.push(data.name);
+    }
+    if (editSiteName) {
+      chrome.storage.sync.remove('@' + editSiteName!);
     }
   }
   chrome.storage.sync.set(items);

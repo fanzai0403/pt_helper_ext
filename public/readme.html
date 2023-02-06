@@ -1,0 +1,217 @@
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>PT Helper</title>
+    <link rel="stylesheet" href="main.css" />
+</head>
+
+<body>
+    <h1 id="-pt-helper-extension">
+        <img src="icons/icon_48.png" width="45" align="left"> PT Helper Extension
+    </h1>
+    <p>Chrome浏览器PT助手插件 - 多站点管理</p>
+    <h2 id="features">Features</h2>
+    <ul>
+        <li>多站点一键签到</li>
+        <li>多站点一键搜索、下载</li>
+        <li>多种子内容分析对比</li>
+        <li>多种子一键添加至qBittorrent</li>
+    </ul>
+    <h2 id="config">Config</h2>
+    <h3 id="qbittorrent">qBittorrent</h3>
+    <ul>
+        <li>地址：QB后台地址，不填会屏蔽QB功能</li>
+        <li>用户名、密码：填写后会自动登录（明文存放，谨防泄漏），不填写可以自己手动登录（共用Chrome会话）</li>
+    </ul>
+    <h3 id="站点配置">站点配置</h3>
+    <ul>
+        <li>一个站点至少要定义名称（name，唯一）和地址（url）两个字段</li>
+        <li>其它字段会有默认值（基于NexusPHP的站点会比较像）</li>
+        <li>单个站点编辑/添加时，其它部分的name、url会被名称、地址覆盖</li>
+        <li>批量编辑时，需要输入数组，数组的元素是站点定义（name、url、其它可选）</li>
+        <li>站点字段定义：</li>
+    </ul>
+    <table>
+        <thead>
+            <tr>
+                <th>字段名</th>
+                <th>定义</th>
+                <th>默认值</th>
+                <th>详情</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>name</td>
+                <td>名称</td>
+                <td>必填</td>
+                <td>站点名称，需要唯一</td>
+            </tr>
+            <tr>
+                <td>url</td>
+                <td>地址</td>
+                <td>必填</td>
+                <td>站点根目录URL</td>
+            </tr>
+            <tr>
+                <td>signin</td>
+                <td>支持签到</td>
+                <td>
+                    <code>true</code>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>signinLinkXPath</td>
+                <td>签到按钮XPath</td>
+                <td>
+                    <code>&quot;//a[@href=\&quot;attendance.php\&quot;]&quot;</code>
+                </td>
+                <td>空串
+                    <code>&quot;&quot;</code>表示打开站点即自动签到
+                </td>
+            </tr>
+            <tr>
+                <td>signinSuccessXPath</td>
+                <td>签到成功XPath</td>
+                <td>
+                    <code>&quot;//td[@id=\&quot;outer\&quot;]//p[contains(text(),\&quot;这是您的第\&quot;)]&quot;</code>
+                </td>
+                <td>空串
+                    <code>&quot;&quot;</code>表示直接假定成功
+                </td>
+            </tr>
+            <tr>
+                <td>signinDoneXPath</td>
+                <td>签到已完成XPath</td>
+                <td>
+                    <code>&quot;//table[@id=\&quot;info_block\&quot;]//text()[contains(.,\&quot;签到已得\&quot;)]&quot;</code>
+                </td>
+                <td>空串
+                    <code>&quot;&quot;</code>表示找不到签到按钮即认为已签
+                </td>
+            </tr>
+            <tr>
+                <td>searchUrl</td>
+                <td>搜索地址</td>
+                <td>
+                    <code>&quot;/torrents.php?search={0}&quot;</code>
+                </td>
+                <td>其中
+                    <code>{0}</code>会被替换为搜索字符串
+                </td>
+            </tr>
+            <tr>
+                <td>searchXPath</td>
+                <td>搜索成功XPath</td>
+                <td>
+                    <code>&quot;//table[@class=\&quot;searchbox\&quot;]&quot;</code>
+                </td>
+                <td>用于区分站点出错、需要登录等情况</td>
+            </tr>
+            <tr>
+                <td>torrentXPath</td>
+                <td>种子XPath</td>
+                <td>
+                    <code>&quot;//table[@class=\&quot;torrents\&quot;]/tbody/tr/td/table[@class=\&quot;torrentname\&quot;]/../..&quot;</code>
+                </td>
+                <td>一条种子记录的节点（以下几个XPath的根）</td>
+            </tr>
+            <tr>
+                <td>linkXPath</td>
+                <td>种子详情链接XPath</td>
+                <td>
+                    <code>&quot;./td[2]//table/tbody/tr/td/a/@href&quot;</code>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>downloadXPath</td>
+                <td>种子下载链接XPath</td>
+                <td>
+                    <code>&quot;.//a[contains(@href,\&quot;download\&quot;)]/@href&quot;</code>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>fileXPath</td>
+                <td>种子文件名XPath</td>
+                <td>
+                    <code>&quot;./td[2]//table/tbody/tr/td/a/@title&quot;</code>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>titleXPath</td>
+                <td>种子标题XPath</td>
+                <td>
+                    <code>&quot;./td[2]//table/tbody/tr/td/a/../br/following-sibling::text()[last()]&quot;</code>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>sizeXPath</td>
+                <td>种子大小XPath</td>
+                <td>
+                    <code>&quot;./td[5]&quot;</code>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>seedXPath</td>
+                <td>种子做种人数XPath</td>
+                <td>
+                    <code>&quot;./td[6]&quot;</code>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>downXPath</td>
+                <td>种子下载人数XPath</td>
+                <td>
+                    <code>&quot;./td[7]&quot;</code>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>finishXPath</td>
+                <td>种子完成人数XPath</td>
+                <td>
+                    <code>&quot;./td[8]&quot;</code>
+                </td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+    <h2 id="notice">Notice</h2>
+    <h3 id="种子内容分析">种子内容分析</h3>
+    <ul>
+        <li>长度不同的文件，内容一定不同</li>
+        <li>校验相同的文件，内容一定相同</li>
+        <li>校验不同的文件，内容不一定不同（顺序、前后文件变化等因素会影响校验）</li>
+    </ul>
+    <h3 id="pt站不公开">PT站不公开</h3>
+    <ul>
+        <li>因各PT站都明令禁止公布地址、名称，所以本插件默认不会包含任何PT站点配置</li>
+        <li>请不要在公开场合跟我或其它人沟通具体站点的配置（私聊可以）</li>
+        <li>如有需要，请在一些私有的PT论坛交流本插件的站点配置</li>
+    </ul>
+    <h3 id="chrome群组">Chrome群组</h3>
+    <ul>
+        <li>组群的窗口可以方便的一键关闭、折叠、拖动等</li>
+        <li>被折叠的群组窗口不会刷新，批量操作会因此卡住</li>
+    </ul>
+    <h2 id="todo">Todo</h2>
+    <ul>
+        <li>移动端适配（未必可行）</li>
+        <li>检测站点种子状态（下载中、做种中、……）</li>
+        <li>搜索页支持站点筛选</li>
+        <li>支持QB之外的更多客户端</li>
+        <li>某些大站的适配（求药）</li>
+        <li>换一套美观、清晰的界面库</li>
+        <li>易用性提升（异常处理、自动刷新等）</li>
+    </ul>
+</body>
+
+</html>

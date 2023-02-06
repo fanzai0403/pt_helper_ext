@@ -455,19 +455,16 @@ function refreshQB() {
 function showQBData() {
     if (!qbData) return;
     let qbRow = document.getElementById('qb_row');
-    if (!qbRow) {
+    if (qbRow) {
+        qbRow.innerHTML = '';
+    } else {
         qbRow = document.createElement('tr');
         qbRow.id = 'qb_row';
-        let th = document.createElement('th');
-        th.textContent = 'qBittorrent';
-        qbRow.append(th);
-        for (const _ in torrents) {
-            th = document.createElement('th');
-            th.colSpan = 3;
-            qbRow.append(th);
-        }
         filesTable.querySelector('thead')!.append(qbRow);
     }
+    const th = document.createElement('th');
+    th.textContent = 'qBittorrent';
+    qbRow.append(th);
 
     document.getElementById('form_select')!.style.display = '';
     const select = document.getElementById('category') as HTMLSelectElement;
@@ -480,9 +477,9 @@ function showQBData() {
     select.value = oldValue;
 
     for (let i = 0; i < torrents.length; i++) {
-        const th = qbRow.children[i + 1];
+        const th = document.createElement('th');
+        th.colSpan = 3;
         const oldCheck = th.querySelector('input[type="checkbox"]:checked');
-        th.innerHTML = '';
         const qbFile = qbData.torrents[torrents[i].hash];
         if (qbFile) {
             th.textContent = `【${qbFile.category}】${Math.floor(qbFile.progress * 1000) / 10}% ${qbFile.state}`;
@@ -507,6 +504,7 @@ function showQBData() {
             button.onclick = () => addTortent([i.toString()]);
             th.append(button);
         }
+        qbRow.append(th);
     }
     onFilesSelect();
 }
@@ -548,6 +546,7 @@ function addTortent(ts: string[]) {
 function qbError(msg: string) {
     document.getElementById('form_select')!.style.display = 'none';
     qbData = null;
+    document.getElementById('qb_row')?.remove();
     showAnalyseMsg(msg);
 }
 

@@ -90,7 +90,9 @@ const editForm = new FloatForm('edit_form', value => {
   for (const sd of data) {
     if (sd?.constructor != Object) return '数组元素应为站点对象{}';
     if (!sd.name || !sd.url) return '站点必须有name和url';
-    items['@' + sd.name] = sd;
+    const key = '@' + sd.name;
+    if (items[key]) return '名称(name)重复';
+    items[key] = sd;
     order.push(sd.name);
   }
   const rm: string[] = [];
@@ -130,7 +132,10 @@ const siteForm = new FloatForm('site_form', value => {
   const items: { [name: string]: any } = {};
   items['@' + data.name] = data;
   if (data.name != editSiteName) {
-    items.order = [...SiteInfo.Order];
+    if (SiteInfo.Order.indexOf(data.name) >= 0 && SiteInfo.ByName[data.name]) {
+      return '名称重复';
+    }
+    items.order = SiteInfo.Order.filter(name => name != data.name);
     const i = editSiteName ? SiteInfo.Order.indexOf(editSiteName) : -1;
     if (i >= 0) {
       items.order[i] = data.name;

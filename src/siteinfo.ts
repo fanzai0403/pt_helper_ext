@@ -55,11 +55,15 @@ export class SiteInfo implements SiteInfoDef {
 
     FullUrl(path: string, txt?: string) {
         let url = this.url;
-        if (url.charAt(url.length - 1) != '/') {
+        if (!path) return this.url;
+        if (!url.endsWith('/')) {
             url += '/';
         }
-        if (path.charAt(0) == '/') {
-            path = path.substring(1);
+        if (path.startsWith('/')) {
+            const m = url.match(/[^:\/]\//);
+            if (m) {
+                url = url.substring(0, m.index! + 1);
+            }
         }
         if (txt === undefined) return url + path;
         return url + path.replace('{0}', encodeURIComponent(txt));
@@ -100,6 +104,20 @@ chrome.storage.sync.onChanged.addListener(changes => {
 
 async function init() {
     const items = await chrome.storage.sync.get(null);
+    if (items.order.length <= 0) {
+        const order: string[] = [];
+        items.order = order;
+        for (let i = 1; i <= 3; i++) {
+            const name = '例子' + i;
+            items['@' + name] = {
+                name: name,
+                url: './sample.html',
+                searchUrl: '',
+            };
+            order.push(name);
+        }
+        chrome.storage.sync.set(items);
+    }
     for (const key in items) {
         const value = items[key];
         if (key == 'order') {

@@ -157,11 +157,8 @@ document.getElementById('site_add')!.onclick = () => {
 
 document.getElementById('edit_all')!.onclick = () => {
   const sites: SiteInfoDef[] = [];
-  for (const siteName of SiteInfo.Order) {
-    const site = SiteInfo.ByName[siteName];
-    if (site) {
-      sites.push(site.def);
-    }
+  for (const site of SiteInfo.GetList()) {
+    sites.push(site.def);
   }
   editForm.pop({ json: JSON.stringify(sites, undefined, 2) });
 };

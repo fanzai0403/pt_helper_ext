@@ -13,6 +13,7 @@ const config = merge(common, {
     options: PATHS.src + '/options.ts',
     search: PATHS.src + '/search.ts',
     content: PATHS.src + '/content.ts',
+    sample: PATHS.src + '/sample.ts',
   },
   module: {
     rules: [

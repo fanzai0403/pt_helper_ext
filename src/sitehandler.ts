@@ -24,6 +24,9 @@ export class SiteHandler {
                 this.table.append(thead);
                 this.tbody = document.createElement('tbody');
                 this.table.append(this.tbody);
+                const tfoot = document.createElement('tfoot');
+                tfoot.innerHTML = '<tr><th colspan="3">当前站点均为例子数据，请前往<a href="/options.html" target="pt_options">《配置》</a>。<br/>详情可查看<a href="/readme.html" target="bt_readme">《说明》</a>。</th></tr>';
+                this.table.append(tfoot);
             }
         }
 
@@ -87,6 +90,9 @@ export class SiteHandler {
 
     onSiteJobUpdate(site: SiteInfo, data?: SiteJobData) {
         let job = this.jobs[site.name];
+        if (site.url.startsWith('http') && this.table) {
+            this.table.querySelector('tfoot')!.style.display = 'none';
+        }
         if (data) {
             if (!job) {
                 job = this.jobs[site.name] = { data: data };
@@ -94,7 +100,7 @@ export class SiteHandler {
             }
             job.data = data;
             if (job.row) {
-                const [_td1, td2, td3] = job.row.querySelectorAll('td')
+                const [_td1, td2, td3] = job.row.querySelectorAll('td');
                 td2.textContent = data.status;
                 td3.querySelector('button')!.disabled = !data.url;
             }
@@ -108,13 +114,13 @@ export class SiteHandler {
         const job = this.jobs[siteName];
         if (!job) return;
         const site = SiteInfo.ByName[siteName];
-        this.portMessage('activeSite', { siteName: siteName, url: job?.data.url ?? site.url })
+        this.portMessage('activeSite', { siteName: siteName, url: job?.data.url ?? site.url });
     }
 
     async reloadSite(siteName: string) {
         const job = this.jobs[siteName];
         if (!job?.data.url) return;
-        this.portMessage('startJob', { siteName: siteName, url: job.data.url })
+        this.portMessage('startJob', { siteName: siteName, url: job.data.url });
     }
 
     async createTabs(urls: { [siteName: string]: string }, otherStatus = '_') {

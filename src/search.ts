@@ -10,7 +10,7 @@ interface TorrentInfo {
     name: string;
     blob: Blob;
     buf: ArrayBuffer;
-    data: TorrentData | null;
+    data: TorrentData;
     hash: string;
 };
 
@@ -45,7 +45,6 @@ const filesTable = document.getElementById('files_table') as HTMLTableElement;
 
 
 let torrents: TorrentInfo[] = [];
-let downloading = 0;
 let qbData: (QBData | null) = null;
 
 
@@ -193,10 +192,19 @@ function doDownload(urls: string[]) {
     showSearch(false);
     showDown(true);
     torrents = [];
+    const downUrls: { [url: string]: true } = {};
+    let allOk = true;
     const template = downTable.querySelector('template')!.content.firstElementChild!;
     const tbody = downTable.querySelector('tbody')!;
     tbody.innerHTML = '';
-    downloading = urls.length;
+    function finishUrl(url: string, ok: boolean) {
+        delete downUrls[url];
+        if (!ok) allOk = false;
+        if (Object.keys(downUrls).length <= 0) {
+            if (allOk) showDown(false);
+            downloadDone();
+        }
+    }
     const nameSet: { [name: string]: true; } = {};
     for (const url of urls) {
         const element = template.cloneNode(true) as HTMLElement;
@@ -233,30 +241,38 @@ function doDownload(urls: string[]) {
         xhr.onload = async ev => {
             if (xhr.status != 200) {
                 status.textContent = '错误：' + xhr.status;
-                downloadDone();
+                finishUrl(url, false);
                 return;
             }
             status.textContent = '完成(' + Size2Txt(ev.loaded) + ') ';
             progress.style.width = '100%';
-            torrents.push({
-                orgName: orgName,
-                name: filename,
-                blob: xhr.response,
-                buf: await xhr.response.arrayBuffer(),
-                data: null,
-                hash: '',
-            });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(xhr.response);
             a.textContent = '下载';
             a.download = filename;
             status.append(a);
-            downloadDone();
+            const buf = await xhr.response.arrayBuffer();
+            const data = BencodingRead(buf) as TorrentData;
+            //console.log(data);
+            if (data) {
+                torrents.push({
+                    orgName: orgName,
+                    name: filename,
+                    blob: xhr.response,
+                    buf: buf,
+                    data: data,
+                    hash: '',
+                });
+                finishUrl(url, true);
+            } else {
+                status.textContent += ' (解析错)';
+                finishUrl(url, false);
+            }
         };
         xhr.onerror = ev => {
             console.log('error:', ev);
             status.textContent = '错误';
-            downloadDone();
+            finishUrl(url, false);
         };
         xhr.open("GET", url, true);
         xhr.responseType = "blob";
@@ -288,9 +304,7 @@ function getFileName(xhr: XMLHttpRequest): string {
 }
 
 function downloadDone() {
-    if (--downloading > 0) return;
     //console.log(torrents);
-    showDown(false);
     showAnalyse(true);
 
     const head = filesTable.querySelector('thead>tr')!;
@@ -304,8 +318,6 @@ function downloadDone() {
     const rows: Row[] = [];
     for (const ti in torrents) {
         const torrent = torrents[ti];
-        torrent.data = BencodingRead(torrent.buf) as TorrentData;
-        //console.log(torrent.data);
         const info = torrent.data.info;
         torrent.hash = sha1(torrent.buf.slice(info._pos_start, info._pos_end));
 

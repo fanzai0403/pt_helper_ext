@@ -11,7 +11,18 @@ Chrome浏览器PT助手插件 - 多站点管理
 
 ## Install
 
-[**Chrome** extension]()
+### 从商店安装
+
+[Chrome应用商店 - PT Helper](https://chrome.google.com/webstore/detail/pt-helper/kdbmbhmgilklcoeafjhfdnhebbndbeof)
+
+##​# 源文件编译
+
+```
+npm install
+npm run build
+```
+
+Chrome浏览器 => [管理扩展程序](chrome://extensions/) => 加载已解压的扩展程序 => build目录
 
 ## Config
 
@@ -70,7 +81,6 @@ Chrome浏览器PT助手插件 - 多站点管理
 ## Todo
 
 - 检测站点种子状态（下载中、做种中、……）
-- 搜索页支持站点筛选
 - 支持QB之外的更多客户端
 - 某些大站的适配（求药）
 - 换一套美观、清晰的界面库

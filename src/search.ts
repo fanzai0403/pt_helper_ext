@@ -25,6 +25,13 @@ interface QBData {
     };
 };
 
+interface ResultRow {
+    data: SearchResult;
+    row: HTMLTableRowElement;
+    check: HTMLInputElement;
+    siteName: string;
+};
+
 let qbServer: {
     url?: string;
     username?: string;
@@ -43,18 +50,24 @@ const downTable = document.getElementById('down_table') as HTMLTableElement;
 
 const filesTable = document.getElementById('files_table') as HTMLTableElement;
 
+let results: ResultRow[] = [];
+let selectSite: { [siteName: string]: true } = {};
 
 let torrents: TorrentInfo[] = [];
 let qbData: (QBData | null) = null;
 
 
-document.getElementById('search_form')!.onsubmit = () => {
-    doSearch(searchText.value);
-    return false;
+handler.onSelectChanged = () => {
+    selectSite = {};
+    for (const site of handler.getSelectedSites()) {
+        selectSite[site.name] = true;
+    }
+    filterSearch();
 };
 
-document.getElementById('button_close')!.onclick = () => {
-    handler.clearTabs();
+document.getElementById('search_form')!.onsubmit = () => {
+    doSearch();
+    return false;
 };
 
 
@@ -116,74 +129,74 @@ function setSelect(parent: HTMLElement, doName: string, allName: string, doFunc:
 
 function onResult(site: SiteInfo, param: SearchResult[]) {
     const template = searchTable.querySelector('template')!.content.firstElementChild!;
-    const removeSet: HTMLElement[] = [];
-    for (const row of searchTable.rows) {
-        if (row.querySelector('a[name="site"]')?.textContent == site.name) {
-            removeSet.push(row);
+    results = results.filter(r => r.siteName != site.name);
+    for (const data of param) {
+        const row = template.cloneNode(true) as HTMLTableRowElement;
+        initRow(row, site, data);
+        results.push({
+            data: data,
+            row: row,
+            check: row.querySelector('input')!,
+            siteName: site.name,
+        });
+    }
+    results.sort((a, b) => b.data.sizeNumber - a.data.sizeNumber);
+    filterSearch();
+    onSearchSelect();
+}
+
+function initRow(row: HTMLTableRowElement, site: SiteInfo, data: SearchResult) {
+    const url = site.FullUrl(data.download);
+    const check = row.querySelector('input[type="checkbox"]') as HTMLInputElement;
+    row.onclick = elem => {
+        const name = (elem.target as HTMLElement).localName;
+        if (name != 'a' && name != 'input') {
+            check.checked = !check.checked;
+            onSearchSelect();
         }
-    }
-    for (const elem of removeSet) {
-        elem.remove();
-    }
-    for (const item of param) {
-        const element = template.cloneNode(true) as HTMLElement;
+    };
 
-        const url = site.FullUrl(item.download);
-        const check = element.querySelector('input[type="checkbox"]') as HTMLInputElement;
-        element.onclick = elem => {
-            const name = (elem.target as HTMLElement).localName;
-            if (name != 'a' && name != 'input') {
-                check.checked = !check.checked;
-                onSearchSelect();
-            }
-        };
+    check.name = url;
+    check.onchange = onSearchSelect;
 
-        check.name = url;
-        check.onchange = onSearchSelect;
+    let a = row.querySelector('a[name="site"]') as HTMLAnchorElement;
+    a.textContent = site.name;
+    a.href = site.url;
+    a.onclick = () => {
+        handler.linkSite(site.name);
+        return false;
+    };
 
-        let a = element.querySelector('a[name="site"]') as HTMLAnchorElement;
-        a.textContent = site.name;
-        a.href = site.url;
-        a.onclick = () => {
-            handler.linkSite(site.name);
-            return false;
-        };
+    a = row.querySelector('a[name="file"]') as HTMLAnchorElement;
+    a.textContent = data.file;
+    a.href = site.FullUrl(data.link);
+    a.target = "_blank";
 
-        a = element.querySelector('a[name="file"]') as HTMLAnchorElement;
-        a.textContent = item.file;
-        a.href = site.FullUrl(item.link);
-        a.target = "_blank";
+    (row.querySelector('span[name="title"]') as HTMLElement).textContent = data.title;
+    (row.querySelector('td[name="size"]') as HTMLElement).textContent = data.size;
+    (row.querySelector('td[name="seed"]') as HTMLElement).textContent = data.seed + '/' + data.down + '/' + data.finish;
+    (row.querySelector('a[name="download"]') as HTMLAnchorElement).href = url;
+}
 
-        (element.querySelector('span[name="title"]') as HTMLElement).textContent = item.title;
-        (element.querySelector('td[name="size"]') as HTMLElement).textContent = item.size;
-        (element.querySelector('td[name="seed"]') as HTMLElement).textContent = item.seed + '/' + item.down + '/' + item.finish;
-        (element.querySelector('a[name="download"]') as HTMLAnchorElement).href = url;
-        insertRow(item.sizeNumber, element);
+function filterSearch() {
+    const tbody = searchTable.querySelector('tbody')!;
+    tbody.innerHTML = '';
+    for (const result of results) {
+        if (selectSite[result.siteName]) {
+            tbody.append(result.row);
+        }
     }
     onSearchSelect();
 }
 
-
-function insertRow(value: number, elem: any) {
-    const tbody = searchTable.querySelector('tbody')!;
-    elem.sortValue = value;
-    for (const row of searchTable.rows) {
-        const v = (row as any).sortValue as (number | undefined);
-        if (v && v < value) {
-            tbody.insertBefore(elem, row);
-            return;
-        }
-    }
-    tbody.append(elem);
-}
-
-async function doSearch(text: string) {
+async function doSearch() {
     showSearch(true);
     searchTable.querySelector('tbody')!.innerHTML = '';
+    results = [];
     onSearchSelect();
     const urls: { [siteName: string]: string } = {};
-    for (const site of SiteInfo.GetList()) {
-        urls[site.name] = site.SearchUrl(text);
+    for (const site of handler.getSelectedSites()) {
+        urls[site.name] = site.SearchUrl(searchText.value);
     }
     handler.createTabs(urls);
 }
@@ -593,6 +606,6 @@ SiteInfo.InitPromise.then(() => {
     let q = getQueryString('q');
     if (q != null) {
         searchText.value = q;
-        doSearch(q);
+        setTimeout(doSearch, 500);
     }
 });

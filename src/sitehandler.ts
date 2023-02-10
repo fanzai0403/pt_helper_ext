@@ -3,6 +3,7 @@ import { SiteInfo } from "./siteinfo";
 
 interface JobInfo {
     row?: HTMLTableRowElement;
+    check?: HTMLInputElement;
     data: SiteJobData;
 }
 
@@ -12,22 +13,16 @@ export class SiteHandler {
     jobs: { [siteName: string]: JobInfo } = {};
     table?: HTMLTableElement;
     tbody?: HTMLTableSectionElement;
+    bottom?: HTMLTableCellElement;
     Handler: { [action: string]: (site: SiteInfo, param?: any) => void } = {};
+    onSelectChanged: () => void = () => { };
+    onSelectChanged_timeout: any = null;
+    isCheckEnable: (site: SiteInfo) => boolean = _site => true;
 
     constructor(job: string, tableName?: string, sync = true) {
         this.job = job;
         if (tableName) {
-            this.table = document.getElementById(tableName) as HTMLTableElement;
-            if (this.table) {
-                const thead = document.createElement('thead');
-                thead.innerHTML = '<tr><th>站点</th><th>信息</th><th>操作</th></tr>';
-                this.table.append(thead);
-                this.tbody = document.createElement('tbody');
-                this.table.append(this.tbody);
-                const tfoot = document.createElement('tfoot');
-                tfoot.innerHTML = '<tr><th colspan="3">当前站点均为例子数据，请前往<a href="/options.html" target="pt_options">《配置》</a>。<br/>详情可查看<a href="/readme.html" target="bt_readme">《说明》</a>。</th></tr>';
-                this.table.append(tfoot);
-            }
+            this.initTable(tableName);
         }
 
         this.Handler.update = this.onSiteJobUpdate;
@@ -58,12 +53,80 @@ export class SiteHandler {
         return this.port;
     }
 
-    createRow(site: SiteInfo, data: SiteJobData) {
-        if (!this.tbody) return undefined;
+    initTable(tableName: string) {
+        this.table = document.getElementById(tableName) as HTMLTableElement;
+        if (!this.table) return;
+
+        const thead = document.createElement('thead');
+        thead.innerHTML = '<tr><th>站点</th><th>信息</th><th>操作</th></tr>';
+        this.table.append(thead);
+        this.tbody = document.createElement('tbody');
+        this.table.append(this.tbody);
+        const tfoot = document.createElement('tfoot');
+        tfoot.innerHTML = '<tr><th colspan="3"></th></tr>'
+            + '<tr id="sample_row"><th colspan="3">当前站点均为例子数据，请前往<a href="/options.html" target="pt_options">《配置》</a>。<br/>详情可查看<a href="/readme.html" target="bt_readme">《说明》</a>。</th></tr>';
+
+        this.bottom = tfoot.querySelector('th')!;
+
+        const btnSelect = document.createElement('button');
+        btnSelect.type = "button";
+        btnSelect.textContent = "全选";
+        btnSelect.onclick = () => {
+            let setChecked = false;
+            for (const siteName in this.jobs) {
+                const cb = this.jobs[siteName].check!;
+                if (!cb.disabled && !cb.checked) {
+                    setChecked = true;
+                    break;
+                }
+            }
+            for (const siteName in this.jobs) {
+                const cb = this.jobs[siteName].check!;
+                if (!cb.disabled)
+                    cb.checked = setChecked;
+            }
+            this.onSiteSelect();
+        };
+        this.bottom.append(btnSelect);
+        this.bottom.append(document.createTextNode(' '));
+
+        const btnClose = document.createElement('button');
+        btnClose.type = "button";
+        btnClose.textContent = "全关";
+        btnClose.onclick = () => this.clearTabs();
+        this.bottom.append(btnClose);
+        this.bottom.append(document.createTextNode(' '));
+
+        const link_hide = document.createElement('a');
+        link_hide.href = '/options.html';
+        link_hide.target = 'pt_options';
+        this.bottom.append(link_hide);
+
+        const btnOption = document.createElement('button');
+        btnOption.type = "button";
+        btnOption.textContent = "配置";
+        btnOption.onclick = () => link_hide.click();
+        this.bottom.append(btnOption);
+        this.bottom.append(document.createTextNode(' '));
+
+        this.table.append(tfoot);
+    }
+
+    createRow(site: SiteInfo, data: SiteJobData): JobInfo {
+        if (!this.tbody) return { data: data };
 
         const tr = document.createElement('tr');
 
         const td1 = document.createElement('td');
+        const cb = document.createElement('input');
+        cb.type = 'checkbox';
+        if (this.isCheckEnable(site)) {
+            cb.checked = true;
+        } else {
+            cb.disabled = true;
+        }
+        cb.onclick = () => this.onSiteSelect();
+        td1.append(cb);
         const a = document.createElement('a');
         a.textContent = site.name;
         a.href = site.url;
@@ -83,20 +146,28 @@ export class SiteHandler {
         td3.append(btn);
         tr.append(td3);
 
+        tr.onclick = elem => {
+            const name = (elem.target as HTMLElement).localName;
+            if (name != 'a' && name != 'input') {
+                cb.checked = !cb.checked;
+                this.onSiteSelect();
+            }
+        };
+
         this.tbody.append(tr);
 
-        return tr;
+        return { data: data, row: tr, check: cb };
     }
 
     onSiteJobUpdate(site: SiteInfo, data?: SiteJobData) {
         let job = this.jobs[site.name];
         if (site.url.startsWith('http') && this.table) {
-            this.table.querySelector('tfoot')!.style.display = 'none';
+            document.getElementById('sample_row')!.style.display = 'none';
         }
         if (data) {
             if (!job) {
-                job = this.jobs[site.name] = { data: data };
-                job.row = this.createRow(site, data);
+                job = this.jobs[site.name] = this.createRow(site, data);
+                this.onSiteSelect();
             }
             job.data = data;
             if (job.row) {
@@ -105,9 +176,30 @@ export class SiteHandler {
                 td3.querySelector('button')!.disabled = !data.url;
             }
         } else if (job) {
+            if (job.check?.checked) {
+                this.onSiteSelect();
+            }
             job.row?.remove();
             delete this.jobs[site.name];
         }
+    }
+
+    onSiteSelect() {
+        if (this.onSelectChanged_timeout) return;
+        this.onSelectChanged_timeout = setTimeout(() => {
+            this.onSelectChanged();
+            this.onSelectChanged_timeout = null;
+        }, 100);
+    }
+
+    getSelectedSites(): SiteInfo[] {
+        const sites: SiteInfo[] = [];
+        for (const site of SiteInfo.GetList()) {
+            if (this.jobs[site.name]?.check?.checked) {
+                sites.push(site);
+            }
+        }
+        return sites;
     }
 
     async linkSite(siteName: string) {
@@ -123,8 +215,8 @@ export class SiteHandler {
         this.portMessage('startJob', { siteName: siteName, url: job.data.url });
     }
 
-    async createTabs(urls: { [siteName: string]: string }, otherStatus = '_') {
-        this.portMessage('createTabs', { urls: urls, otherStatus: otherStatus });
+    async createTabs(urls: { [siteName: string]: string }) {
+        this.portMessage('createTabs', urls);
     }
 
     clearTabs() {

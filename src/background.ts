@@ -94,7 +94,7 @@ class CJob {
     async startJob(siteName: string, url?: string, status = '...') {
         const sj = this.getOrCreate(siteName);
         if (!sj) return;
-        sj.data.jobDone = false;
+        sj.data.jobDone = !url;
         sj.data.url = url;
         sj.data.status = status;
         this.updateSite(siteName);
@@ -103,10 +103,10 @@ class CJob {
         }
     }
 
-    async createTabs(urls: { [siteName: string]: string }, otherStatus = '_') {
+    async createTabs(urls: { [siteName: string]: string }) {
         for (const site of SiteInfo.GetList()) {
             const url = urls[site.name];
-            await this.startJob(site.name, url, url ? undefined : otherStatus);
+            await this.startJob(site.name, url, url ? undefined : '_');
         }
     }
 
@@ -206,9 +206,9 @@ PortHandler.syncData = job => {
     }
 };
 
-PortHandler.createTabs = (job, param) => {
+PortHandler.createTabs = (job, urls) => {
     job.applySaveData();
-    return job.createTabs(param.urls, param.otherStatus);
+    return job.createTabs(urls);
 }
 
 PortHandler.clearTabs = job => {

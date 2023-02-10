@@ -148,7 +148,7 @@ export class SiteHandler {
 
         tr.onclick = elem => {
             const name = (elem.target as HTMLElement).localName;
-            if (name != 'a' && name != 'input') {
+            if (name != 'a' && name != 'input' && name != 'button') {
                 cb.checked = !cb.checked;
                 this.onSiteSelect();
             }

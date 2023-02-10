@@ -28,6 +28,7 @@
         <th>大小</th>
         <th>种/下/完</th>
         <th>来源</th>
+        <th>进度</th>
         <th>操作</th>
       </tr>
     </thead>
@@ -42,6 +43,12 @@
         <td name="size">Size</td>
         <td name="seed">Seed/Down/Finish</td>
         <td><a name="site">Site</a></td>
+        <td name="progress">
+          <span></span><br />
+          <div class="progress_box" style="display: none;">
+            <div class="progress_load"></div>
+          </div>
+        </td>
         <td><a name="download">下载原文件</a></td>
       </tr>
     </template>
@@ -84,9 +91,7 @@
 
   <form class="float" style="right: 20px; top: 20px;">
     <span id="popup_view">
-      <span id="popup_search">
-        <table id="site_table"></table>
-      </span>
+      <table id="site_table"></table>
 
       <span id="popup_analyse">
         <b><a id="link_qb" target="qBittorrent">qBittorrent</a></b><br />

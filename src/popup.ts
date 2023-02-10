@@ -15,5 +15,6 @@ document.getElementById('button_signin')!.onclick = () => {
 };
 
 document.getElementById('button_search')!.onclick = () => document.getElementById('link_search')!.click();
+document.getElementById('button_readme')!.onclick = () => document.getElementById('link_readme')!.click();
 
 handler.isCheckEnable = site => site.signin;

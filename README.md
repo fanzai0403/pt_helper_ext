@@ -17,12 +17,17 @@ Chrome浏览器PT助手插件 - 多站点管理
 
 ### 源文件编译
 
+1. 拉取
+- https://github.com/fanzai0403/pt_helper_ext.git
+
+2. 编译
 ```
 npm install
 npm run build
 ```
 
-Chrome浏览器 => [管理扩展程序](chrome://extensions/) => 加载已解压的扩展程序 => build目录
+3. 安装
+- Chrome浏览器 => [管理扩展程序](chrome://extensions/) => 加载已解压的扩展程序 => build目录
 
 ## Config
 
@@ -58,6 +63,8 @@ Chrome浏览器 => [管理扩展程序](chrome://extensions/) => 加载已解压
 | seedXPath | 种子做种人数XPath | `"./td[6]"` |  |
 | downXPath | 种子下载人数XPath | `"./td[7]"` |  |
 | finishXPath | 种子完成人数XPath | `"./td[8]"` |  |
+| progressTextXPath | 进度文本XPath | `"./td[2]//table/tbody/tr/td/div/@title"` |  |
+| progressBarXPath | 进度条XPath | `"./td[2]//table/tbody/tr/td/div/div"` | 根据此节点的width属性或文本计算进度百分比 |
 
 ## Notice
 
@@ -80,7 +87,6 @@ Chrome浏览器 => [管理扩展程序](chrome://extensions/) => 加载已解压
 
 ## Todo
 
-- 检测站点种子状态（下载中、做种中、……）
 - 支持QB之外的更多客户端
 - 某些大站的适配（求药）
 - 换一套美观、清晰的界面库

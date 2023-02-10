@@ -24,15 +24,33 @@
         <a href="https://chrome.google.com/webstore/detail/pt-helper/kdbmbhmgilklcoeafjhfdnhebbndbeof">Chrome应用商店 - PT
             Helper</a>
     </p>
-    <p>##​# 源文件编译</p>
-    <pre>
-            <code>npm install
-    npm run build
-    </code>
-        </pre>
-    <p>Chrome浏览器 =&gt;
-        <a href="chrome://extensions/">管理扩展程序</a> =&gt; 加载已解压的扩展程序 =&gt; build目录
-    </p>
+    <h3 id="源文件编译">源文件编译</h3>
+    <ol>
+        <li>拉取</li>
+    </ol>
+    <ul>
+        <li>
+            <a
+                href="https://github.com/fanzai0403/pt_helper_ext.git">https://github.com/fanzai0403/pt_helper_ext.git</a>
+        </li>
+    </ul>
+    <ol start="2">
+        <li>
+            <p>编译</p>
+            <pre><code>
+  npm install
+  npm run build
+</code></pre>
+        </li>
+        <li>
+            <p>安装</p>
+        </li>
+    </ol>
+    <ul>
+        <li>Chrome浏览器 =&gt;
+            <a href="chrome://extensions/">管理扩展程序</a> =&gt; 加载已解压的扩展程序 =&gt; build目录
+        </li>
+    </ul>
     <h2 id="config">Config</h2>
     <h3 id="qbittorrent">qBittorrent</h3>
     <ul>
@@ -197,6 +215,22 @@
                 </td>
                 <td></td>
             </tr>
+            <tr>
+                <td>progressTextXPath</td>
+                <td>进度文本XPath</td>
+                <td>
+                    <code>&quot;./td[2]//table/tbody/tr/td/div/@title&quot;</code>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>progressBarXPath</td>
+                <td>进度条XPath</td>
+                <td>
+                    <code>&quot;./td[2]//table/tbody/tr/td/div/div&quot;</code>
+                </td>
+                <td>根据此节点的width属性或文本计算进度百分比</td>
+            </tr>
         </tbody>
     </table>
     <h2 id="notice">Notice</h2>
@@ -219,7 +253,6 @@
     </ul>
     <h2 id="todo">Todo</h2>
     <ul>
-        <li>检测站点种子状态（下载中、做种中、……）</li>
         <li>支持QB之外的更多客户端</li>
         <li>某些大站的适配（求药）</li>
         <li>换一套美观、清晰的界面库</li>

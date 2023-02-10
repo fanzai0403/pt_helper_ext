@@ -12,6 +12,8 @@ Handler.search = function () {
         finish: '1',
         link: '',
         download: '/sample.torrent',
+        progressText: '',
+        progressPercent: 0,
         sizeNumber: 1024 * 1024 * 1024,
     };
     sendMessage('result', [item]);

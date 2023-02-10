@@ -76,7 +76,7 @@ document.getElementById('button_refresh')!.onclick = refreshQB;
 
 const showSearch = setShowHide('search_table', 'search_show', 'search_hide', show => {
     document.getElementById('search_form')!.style.position = show ? 'fixed' : 'absolute';
-    document.getElementById('popup_search')!.style.display = show ? '' : 'none';
+    document.getElementById('site_table')!.style.display = show ? '' : 'none';
 });
 showSearch(true);
 const showDown = setShowHide('down_table', 'down_show', 'down_hide');
@@ -176,6 +176,12 @@ function initRow(row: HTMLTableRowElement, site: SiteInfo, data: SearchResult) {
     (row.querySelector('td[name="size"]') as HTMLElement).textContent = data.size;
     (row.querySelector('td[name="seed"]') as HTMLElement).textContent = data.seed + '/' + data.down + '/' + data.finish;
     (row.querySelector('a[name="download"]') as HTMLAnchorElement).href = url;
+    const progressTD = row.querySelector('td[name="progress"]') as HTMLElement;
+    progressTD.querySelector('span')!.textContent = data.progressText;
+    if (data.progressPercent) {
+        progressTD.querySelector('div')!.style.display = '';
+        (progressTD.querySelector('div>div') as HTMLElement).style.width = data.progressPercent + '%';
+    }
 }
 
 function filterSearch() {

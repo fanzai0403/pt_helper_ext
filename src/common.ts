@@ -7,6 +7,8 @@ export interface SearchResult {
     finish: string;
     link: string;
     download: string;
+    progressText: string;
+    progressPercent: number;
     sizeNumber: number;
 }
 

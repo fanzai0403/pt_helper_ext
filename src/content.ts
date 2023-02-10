@@ -21,6 +21,26 @@ Handler.search = function () {
             return findXPath(xpath, elem)?.textContent?.trim() ?? '';
         }
         const st = getstr(site.sizeXPath);
+        const ptxt = getstr(site.progressTextXPath);
+        let ppct = ptxt;
+        if (site.progressBarXPath) {
+            const pbar = findXPath(site.progressBarXPath, elem);
+            if (pbar) {
+                ppct = pbar.style.width;
+                if (!ppct) {
+                    ppct = pbar.textContent ?? '';
+                }
+            }
+        }
+        let ppctNum = 0;
+        if (ppct) {
+            let m: RegExpMatchArray | null;
+            if (m = ppct.match(/(\d+)%/)) {
+                ppctNum = parseInt(m[1]);
+            } else if (m = ppct.match(/(\d+)px/)) {
+                ppctNum = Math.floor(100 - parseInt(m[1]) / 3);
+            }
+        }
         items.push({
             file: getstr(site.fileXPath),
             title: getstr(site.titleXPath),
@@ -30,6 +50,8 @@ Handler.search = function () {
             finish: getstr(site.finishXPath).replace(/,/g, ''),
             link: getstr(site.linkXPath),
             download: getstr(site.downloadXPath),
+            progressText: ptxt,
+            progressPercent: ppctNum,
             sizeNumber: TxtToSize(st),
         });
     }

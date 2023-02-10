@@ -16,6 +16,8 @@ export interface SiteInfoDef {
     seedXPath?: string;
     downXPath?: string;
     finishXPath?: string;
+    progressTextXPath?: string;
+    progressBarXPath?: string;
 };
 
 export class SiteInfo implements SiteInfoDef {
@@ -36,6 +38,8 @@ export class SiteInfo implements SiteInfoDef {
     seedXPath = './td[6]';
     downXPath = './td[7]';
     finishXPath = './td[8]';
+    progressTextXPath = './td[2]//table/tbody/tr/td/div/@title';
+    progressBarXPath = './td[2]//table/tbody/tr/td/div/div';
 
     def: SiteInfoDef;
 

@@ -15,7 +15,7 @@ Chrome浏览器PT助手插件 - 多站点管理
 
 [Chrome应用商店 - PT Helper](https://chrome.google.com/webstore/detail/pt-helper/kdbmbhmgilklcoeafjhfdnhebbndbeof)
 
-##​# 源文件编译
+### 源文件编译
 
 ```
 npm install

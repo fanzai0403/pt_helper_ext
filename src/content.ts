@@ -91,6 +91,8 @@ function setStatus(status: string, done = false) {
 sendMessage('job').then(param => {
     if (!param) return;
     console.log('onStart:', param);
-    site = SiteInfo.ByName[param.siteName];
-    Handler[param.job]();
+    SiteInfo.InitPromise.then(() => {
+        site = SiteInfo.ByName[param.siteName];
+        Handler[param.job]();
+    });
 });

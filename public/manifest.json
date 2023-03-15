@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "PT Helper",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "PT Helper Extension",
   "icons": {
     "16": "icons/icon_16.png",
